@@ -178,8 +178,25 @@ class Readonly {
   }
 
   public function enum_hub() {
-    throw new VPNException('not implemented yet');
     $ret = $this->connection->call('EnumHub');
+    $a = array();
+    for ($i = 0; $i < count($ret['HubName']); ++$i) {
+      $a[$i] = array(
+        'Online' => (boolean)Detail\lookup($ret, 'Online', $i),
+        'HubName' => Detail\lookup($ret, 'HubName', $i),
+        'HubType' => Detail\lookup($ret, 'HubType', $i),
+        'CreateTime' => Detail\lookup($ret, 'CreatedTime', $i),
+        'LastCommunicateTime' => Detail\lookup($ret, 'LastCommTime', $i),
+        'LastLoginTime' => Detail\lookup($ret, 'LastLoginTime', $i),
+        'Login' => Detail\lookup($ret, 'NumLogin', $i),
+        'Sessions' => Detail\lookup($ret, 'NumSessions', $i),
+        'Users' => Detail\lookup($ret, 'NumUsers', $i),
+        'Groups' => Detail\lookup($ret, 'NumGroups', $i),
+        'MacTables' => Detail\lookup($ret, 'NumMacTables', $i),
+        'IpTables' => Detail\lookup($ret, 'NumIpTables', $i),
+      );
+    }
+    return $a;
   }
 
   public function get_hub_radius() {
