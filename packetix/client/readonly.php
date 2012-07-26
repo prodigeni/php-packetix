@@ -29,8 +29,8 @@ class Readonly {
       'IntValue' => array(new Detail\Int($value)),
       'StrValue' => array(new Detail\String(openssl_random_pseudo_bytes(8)))));
 
-    if ($ret['IntValue'][0]->get_value() != $value
-    || $ret['StrValue'][0]->get_value() != sprintf('%d', $value)) {
+    if (Detail\lookup($ret, 'IntValue') != $value
+    || Detail\lookup($ret, 'StrValue') != sprintf('%d', $value)) {
       throw new VPNException('PacketiX RPC test failed');
     }
     return true;
