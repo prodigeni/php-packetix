@@ -4,7 +4,7 @@ use \PacketiX\VPNException;
 
 function check_error($pack) {
   if (array_key_exists('error', $pack)) {
-    $strerr = strerror($pack['error'][0]->get_value());
+    $strerr = strerror(Detail\lookup($pack, 'error'));
     throw new VPNException("error detected ($strerr)");
   }
   return $pack;

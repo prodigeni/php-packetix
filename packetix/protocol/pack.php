@@ -180,3 +180,15 @@ function serialize($p) {
 
   return $ostr->get_raw();
 }
+
+function lookup($pack, $key, $index = 0) {
+  if (!array_key_exists($key, $pack)) {
+    throw new VPNPackException('key not found');
+  }
+  $v = $pack[$key];
+  if (count($v) <= $index) {
+    throw new VPNPackException('index out of range');
+  }
+
+  return $pack[$key][$index]->get_value();
+}

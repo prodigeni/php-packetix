@@ -50,7 +50,7 @@ class Connection {
       throw new VPNProtocolException('Bad Hello messages');
     }
 
-    $this->random = $pack['random'][0]->get_value();
+    $this->random = Detail\lookup($pack, 'random');
   }
 
   private function sha0($raw) {
