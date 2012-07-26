@@ -48,9 +48,15 @@ class RawIStream {
     return $bytes;
   }
 
-  public function get_int() { return $this->get_int_impl(4); }
-  public function get_int64() { return $this->get_int_impl(8); }
-  public function get_boolean() { return $this->get_int() == 1; }
+  public function get_int() {
+    return $this->get_int_impl(4);
+  }
+  public function get_int64() {
+    return $this->get_int_impl(8);
+  }
+  public function get_boolean() {
+    return $this->get_int() == 1;
+  }
   public function get_string($offset = 0) {
     $len = $this->get_int() - $offset;
     return $this->get_raw($len);
@@ -99,7 +105,9 @@ class RawOStream {
   private $raw = '';
   private $len = 0;
 
-  public function get_raw() { return $this->raw; }
+  public function get_raw() {
+    return $this->raw;
+  }
 
   private function set_int_impl($val, $size) {
     if (PHP_INT_SIZE < $size) {
@@ -119,9 +127,15 @@ class RawOStream {
     $this->len += strlen($raw);
   }
 
-  public function set_int($val) { $this->set_int_impl($val, 4); }
-  public function set_int64($val) { $this->set_int_impl($val, 8); }
-  public function set_boolean($val) { $this->set_int($val ? 1 : 0); }
+  public function set_int($val) {
+    $this->set_int_impl($val, 4);
+  }
+  public function set_int64($val) {
+    $this->set_int_impl($val, 8);
+  }
+  public function set_boolean($val) {
+    $this->set_int($val ? 1 : 0);
+  }
   public function set_string($val, $offset = 0) {
     $this->set_int(strlen($val) + $offset);
     $this->set_raw($val);
@@ -150,7 +164,9 @@ function serialize($p) {
   $ostr = new RawOStream;
   $ostr->set_int(count($p));
   foreach ($p as $key => $value) {
-    if (!count($value)) { continue; }
+    if (!count($value)) {
+      continue;
+    }
 
     $t = $typer[get_class($value[0])];
     $ostr->set_string($key, 1);

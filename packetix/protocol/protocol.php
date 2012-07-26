@@ -118,7 +118,9 @@ class Connection {
     }
   }
   public function reconnect() {
-    if ($this->socket) { fclose($this->socket); }
+    if ($this->socket) {
+      fclose($this->socket);
+    }
     $this->connect();
   }
 

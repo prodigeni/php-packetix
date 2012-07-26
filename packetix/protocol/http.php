@@ -56,8 +56,16 @@ class HTTPresponse {
 
   private $code_, $codeline_, $opts_, $content_;
 
-  public function code() { return $this->code_; }
-  public function codeline() { return $this->codeline_; }
-  public function opt($key) { return $this->opts_[$key]; }
-  public function content() { return $this->content_; }
+  public function code() {
+    return $this->code_;
+  }
+  public function codeline() {
+    return $this->codeline_;
+  }
+  public function opt($key) {
+    return $this->opts_[$key];
+  }
+  public function content() {
+    return $this->content_;
+  }
 }
