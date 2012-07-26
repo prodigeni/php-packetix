@@ -129,8 +129,17 @@ class Readonly {
   }
 
   public function enum_listener() {
-    throw new VPNException('not implemented yet');
     $ret = $this->connection->call('EnumListener');
+
+    $a = array();
+    for ($i = 0; $i < count($ret['Enables']); ++$i) {
+      $a[$i] = array(
+        'Enabled' => (boolean)Detail\lookup($ret, 'Enables', $i),
+        'Errors' => Detail\lookup($ret, 'Errors', $i),
+        'Port' => Detail\lookup($ret, 'Ports', $i),
+      );
+    }
+    return $a;
   }
 
   public function get_farm_setting() {
