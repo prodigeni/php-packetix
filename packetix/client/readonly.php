@@ -2,7 +2,7 @@
 require_once(dirname(__FILE__).'/../protocol/protocol.php');
 
 use \PacketiX\VPNException;
-use \PacketiX\Protocol\Detail\Type;
+use \PacketiX\Protocol\Detail;
 
 class Readonly {
   protected $connection;
@@ -26,8 +26,8 @@ class Readonly {
     }
 
     $ret = $this->connection->call('Test', array(
-      'IntValue' => array(new Type('int', $value)),
-      'StrValue' => array(new Type('string', openssl_random_pseudo_bytes(8)))));
+      'IntValue' => array(new Detail\Int($value)),
+      'StrValue' => array(new Detail\String(openssl_random_pseudo_bytes(8)))));
 
     if ($ret['IntValue'][0]->get_value() != $value
     || $ret['StrValue'][0]->get_value() != sprintf('%d', $value)) {

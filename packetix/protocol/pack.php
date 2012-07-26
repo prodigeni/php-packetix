@@ -2,15 +2,22 @@
 
 class VPNPackException extends \PacketiX\VPNException {}
 
-class Type {
-  private $value;
-  public function __construct($type, $value) {
-    $this->type = $type;
+abstract class Type {
+  protected $value;
+  public function __construct($value) {
     $this->value = $value;
   }
-  public function get_type() { return $this->type; }
-  public function get_value() { return $this->value; }
+
+  public function get_value() {
+    return $this->value;
+  }
 }
+
+class Int extends Type {}
+class Int64 extends Type {}
+class Data extends Type {}
+class String extends Type {}
+class Ustring extends Type {}
 
 class RawIStream {
   private $raw;
@@ -53,19 +60,19 @@ class RawIStream {
 function deserialize($raw) {
   $typer = array(
     0 => function($stream) { // Int
-      return new Type('int', $stream->get_int());
+      return new Int($stream->get_int());
     },
     1 => function($stream) { // Data
-      return new Type('data', $stream->get_string());
+      return new Data($stream->get_string());
     },
     2 => function($stream) { // String
-      return new Type('string', $stream->get_string());
+      return new String($stream->get_string());
     },
-    3 => function($stream) { // Unicode String (UTF-8)
-      return new Type('ustring', $stream->get_string());
+    3 => function($stream) { // Unicode String
+      return new Ustring($stream->get_string());
     },
     4 => function($stream) { // Int64
-      return new Type('int64', $stream->get_int64());
+      return new Int64($stream->get_int64());
     }
   );
 
@@ -123,11 +130,21 @@ class RawOStream {
 
 function serialize($p) {
   $typer = array(
-    'int'     => array(0, function($ostr, $v) { $ostr->set_int($v->get_value()); }),
-    'data'    => array(1, function($ostr, $v) { $ostr->set_string($v->get_value()); }),
-    'string'  => array(2, function($ostr, $v) { $ostr->set_string($v->get_value()); }),
-    'ustring' => array(3, function($ostr, $v) { $ostr->set_string($v->get_value()); }),
-    'int64'   => array(4, function($ostr, $v) { $ostr->set_int64($v->get_value()); })
+    'PacketiX\Protocol\Detail\Int' => array(0, function($ostr, $v) {
+      $ostr->set_int($v->get_value());
+    }),
+    'PacketiX\Protocol\Detail\Data' => array(1, function($ostr, $v) {
+      $ostr->set_string($v->get_value());
+    }),
+    'PacketiX\Protocol\Detail\String' => array(2, function($ostr, $v) {
+      $ostr->set_string($v->get_value());
+    }),
+    'PacketiX\Protocol\Detail\Ustring' => array(3, function($ostr, $v) {
+      $ostr->set_string($v->get_value());
+    }),
+    'PacketiX\Protocol\Detail\Int64' => array(4, function($ostr, $v) {
+      $ostr->set_int64($v->get_value());
+    })
   );
 
   $ostr = new RawOStream;
@@ -135,7 +152,7 @@ function serialize($p) {
   foreach ($p as $key => $value) {
     if (!count($value)) { continue; }
 
-    $t = $typer[$value[0]->get_type()];
+    $t = $typer[get_class($value[0])];
     $ostr->set_string($key, 1);
     $ostr->set_int($t[0]);
     $ostr->set_int(count($value));

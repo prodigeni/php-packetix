@@ -63,11 +63,11 @@ class Connection {
 
   private function enter_admin_session() {
     $p = array(
-      'method' => array(new Detail\Type('string', 'admin')),
-      'timestamp' => array(new Detail\Type('int64', Time\get_current_stamp())),
-      'client_str' => array(new Detail\Type('string', 'PacketiX RPC API for PHP')),
-      'client_ver' => array(new Detail\Type('int', '0')),
-      'client_build' => array(new Detail\Type('int', '0'))
+      'method' => array(new Detail\String('admin')),
+      'timestamp' => array(new Detail\Int64(Time\get_current_stamp())),
+      'client_str' => array(new Detail\String('PacketiX RPC API for PHP')),
+      'client_ver' => array(new Detail\Int(0)),
+      'client_build' => array(new Detail\Int(0))
     );
     Platform\packing_winver($p);
 
@@ -76,7 +76,7 @@ class Connection {
     }
 
     $secpw = $this->secure_password();
-    $p['secure_password'] = array(new Detail\Type('data', $secpw));
+    $p['secure_password'] = array(new Detail\Data($secpw));
 
     $raw = Detail\serialize($p);
     HTTP\send_request($this->socket, 'post', '/vpnsvc/vpn.cgi', $raw, array(
@@ -139,7 +139,7 @@ class Connection {
     if (array_key_exists('function_name', $rpc)) {
       throw new VPNProtocolException('function_name should not specify by user');
     }
-    $rpc['function_name'] = array(new Detail\Type('string', $function));
+    $rpc['function_name'] = array(new Detail\String($function));
     $raw = Detail\serialize($rpc);
 
     $ostr = new Detail\RawOStream;
