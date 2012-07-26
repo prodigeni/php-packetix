@@ -36,14 +36,96 @@ class Readonly {
     return true;
   }
 
+  private static function get_os_info($pack) {
+    return array(
+      'Kernel' => Detail\lookup($pack, 'KernelName'),
+      'KernelVersion' => Detail\lookup($pack, 'KernelVersion'),
+      'Product' => Detail\lookup($pack, 'OsProductName'),
+      'ServicePack' => Detail\lookup($pack, 'OsServicePack'),
+      'SystemName' => Detail\lookup($pack, 'OsSystemName'),
+      'Type' => Detail\lookup($pack, 'OsType'),
+      'VendorName' => Detail\lookup($pack, 'OsVendorName'),
+      'Version' => Detail\lookup($pack, 'OsVersion'),
+    );
+  }
+
   public function get_server_info() {
-    throw new VPNException('not implemented yet');
     $ret = $this->connection->call('GetServerInfo');
+    return array(
+      'OSInfo' => self::get_os_info($ret),
+      'BuildInfo' => Detail\lookup($ret, 'ServerBuildInfoString'),
+      'Build' => Detail\lookup($ret, 'ServerBuildInt'),
+      'HostName' => Detail\lookup($ret, 'ServerHostName'),
+      'Product' => Detail\lookup($ret, 'ServerProductName'),
+      'Type' => Detail\lookup($ret, 'ServerType'),
+      'Version' => Detail\lookup($ret, 'ServerVerInt'),
+      'VersionString' => Detail\lookup($ret, 'ServerVersionString'),
+    );
+  }
+
+  public static function get_traffic($pack) {
+    return array(
+      'Recv' => array(
+        'BroadcastBytes' => Detail\lookup($pack, 'Recv.BroadcastBytes'),
+        'BroadcastCount' => Detail\lookup($pack, 'Recv.BroadcastCount'),
+        'UnicastBytes' => Detail\lookup($pack, 'Recv.UnicastBytes'),
+        'UnicastCount' => Detail\lookup($pack, 'Recv.UnicastCount'),
+      ),
+      'Send' => array(
+        'BroadcastBytes' => Detail\lookup($pack, 'Send.BroadcastBytes'),
+        'BroadcastCount' => Detail\lookup($pack, 'Send.BroadcastCount'),
+        'UnicastBytes' => Detail\lookup($pack, 'Send.UnicastBytes'),
+        'UnicastCount' => Detail\lookup($pack, 'Send.UnicastCount'),
+      ),
+    );
+  }
+
+  public static function get_meminfo($pack) {
+    return array(
+      'TotalMemory' => Detail\lookup($pack, 'TotalMemory'),
+      'UsedMemory' => Detail\lookup($pack, 'UsedMemory'),
+      'FreeMemory' => Detail\lookup($pack, 'FreeMemory'),
+      'TotalPhys' => Detail\lookup($pack, 'TotalPhys'),
+      'UsedPhys' => Detail\lookup($pack, 'UsedPhys'),
+      'FreePhys' => Detail\lookup($pack, 'FreePhys'),
+    );
   }
 
   public function get_server_status() {
-    throw new VPNException('not implemented yet');
     $ret = $this->connection->call('GetServerStatus');
+    return array(
+      'Traffic' => self::get_traffic($ret),
+      'MemInfo' => self::get_meminfo($ret),
+      'Tcp' => array(
+        'Connections' => Detail\lookup($ret, 'NumTcpConnections'),
+        'ConnectionsLocal' => Detail\lookup($ret, 'NumTcpConnectionsLocal'),
+        'ConnectionsRemote' => Detail\lookup($ret, 'NumTcpConnectionsRemote'),
+      ),
+      'Hub' => array(
+        'Total' => Detail\lookup($ret, 'NumHubTotal'),
+        'Standalone' => Detail\lookup($ret, 'NumHubStandalone'),
+        'Static' => Detail\lookup($ret, 'NumHubStatic'),
+        'Dynamic' => Detail\lookup($ret, 'NumHubDynamic'),
+      ),
+      'Session' => array(
+        'Total' => Detail\lookup($ret, 'NumSessionsTotal'),
+        'Local' => Detail\lookup($ret, 'NumSessionsLocal'),
+        'Remote' => Detail\lookup($ret, 'NumSessionsRemote'),
+      ),
+      'MacTables' => Detail\lookup($ret, 'NumMacTables'),
+      'IpTables' => Detail\lookup($ret, 'NumIpTables'),
+      'Users' => Detail\lookup($ret, 'NumUsers'),
+      'Groups' => Detail\lookup($ret, 'NumGroups'),
+      'CurrentTime' => Detail\lookup($ret, 'CurrentTime'),
+      'CurrentTick' => Detail\lookup($ret, 'CurrentTick'),
+      'StartTime' => Detail\lookup($ret, 'StartTime'),
+      'Licenses' => array(
+        'Bridge' => Detail\lookup($ret, 'AssignedBridgeLicenses'),
+        'Client' => Detail\lookup($ret, 'AssignedClientLicenses'),
+        'BridgeTotal' => Detail\lookup($ret, 'AssignedBridgeLicensesTotal'),
+        'ClientTotal' => Detail\lookup($ret, 'AssignedClientLicensesTotal'),
+      ),
+    );
   }
 
   public function enum_listener() {
