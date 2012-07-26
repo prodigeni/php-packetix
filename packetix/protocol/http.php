@@ -18,12 +18,6 @@ function send_request($soc, $method, $target, $body, $opts = array()) {
   }
 
   $raw = $header."\r\n".$body;
-  {
-    $fp = fopen('file:///tmp/raw', 'ab');
-    fwrite($fp, $raw);
-    fwrite($fp, "\r\n\r\n");
-    fclose($fp);
-  }
   return fwrite($soc, $raw) == strlen($raw);
 }
 
