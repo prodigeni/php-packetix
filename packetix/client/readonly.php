@@ -219,14 +219,45 @@ class Readonly {
     );
   }
 
-  public function enum_connection() {
-    throw new VPNException('not implemented yet');
-    $ret = $this->connection->call('EnumConnection');
+  public static function get_ip($pack, $i = 0) {
+    return array(); // TODO: impl
   }
 
-  public function get_connection_info() {
-    throw new VPNException('not implemented yet');
-    $ret = $this->connection->call('GetConnectionInfo');
+  public function enum_connection() {
+    $ret = $this->connection->call('EnumConnection');
+
+    $a = array();
+    for ($i = 0; $i < count($ret['Hostname']); ++$i) {
+      $a[$i] = array_merge(self::get_ip($ret, $i), array(
+        'Hostname' => Detail\lookup($ret, 'Hostname', $i),
+        'CID' => Detail\lookup($ret, 'Name', $i),
+        'Port' => Detail\lookup($ret, 'Port', $i),
+        'Type' => Detail\lookup($ret, 'Type', $i),
+        'ConnectedTime' => Detail\lookup($ret, 'ConnectedTime', $i),
+      ));
+    }
+    return $a;
+  }
+
+  public function get_connection($cid) {
+    $ret = $this->connection->call('GetConnectionInfo', array(
+      'Name' => array(new Detail\String($cid))));
+    return array_merge(self::get_ip($ret), array(
+      'Port' => Detail\lookup($ret, 'Port'),
+      'Type' => Detail\lookup($ret, 'Type'),
+      'Hostname' => Detail\lookup($ret, 'Hostname'),
+      'ConnectedTime' => Detail\lookup($ret, 'ConnectedTime'),
+      'Server' => array(
+        'Name' => Detail\lookup($ret, 'ServerStr'),
+        'Version' => Detail\lookup($ret, 'ServerVer'),
+        'Build' => Detail\lookup($ret, 'ServerBuild'),
+      ),
+      'Client' => array(
+        'Name' => Detail\lookup($ret, 'ClientStr'),
+        'Version' => Detail\lookup($ret, 'ClientVer'),
+        'Build' => Detail\lookup($ret, 'ClientBuild'),
+      ),
+    ));
   }
 
   public function get_hub_status() {
