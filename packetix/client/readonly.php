@@ -172,9 +172,15 @@ class Readonly {
     $ret = $this->connection->call('GetServerCipher');
   }
 
-  public function get_hub() {
-    throw new VPNException('not implemented yet');
-    $ret = $this->connection->call('GetHub');
+  public function get_hub($hubname) {
+    $ret = $this->connection->call('GetHub', array(
+      'HubName' => array(new Detail\String($hubname))));
+    return array(
+      'Name' => Detail\lookup($ret, 'HubName'),
+      'Type' => Detail\lookup($ret, 'HubType'),
+      'MaxSession' => Detail\lookup($ret, 'MaxSession'),
+      'Online' => (boolean)Detail\lookup($ret, 'Online'),
+    );
   }
 
   public function enum_hub() {
