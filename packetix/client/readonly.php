@@ -205,9 +205,18 @@ class Readonly {
     return $a;
   }
 
-  public function get_hub_radius() {
-    throw new VPNException('not implemented yet');
-    $ret = $this->connection->call('GetHubRadius');
+  public function get_hub_radius($hubname) {
+    $ret = $this->connection->call('GetHubRadius', array(
+      'HubName' => array(new Detail\String($hubname))));
+    if (!Detail\lookup($ret, 'RadiusServerName')) {
+      throw new VPNException('Radius server not configured');
+    }
+    return array(
+      'ServerName' => Detail\lookup($ret, 'RadiusServerName'),
+      'Port' => Detail\lookup($ret, 'RadiusPort'),
+      'Secret' => Detail\lookup($ret, 'RadiusSecret'),
+      'RetryInterval' => Detail\lookup($ret, 'RadiusRetryInterval'),
+    );
   }
 
   public function enum_connection() {
