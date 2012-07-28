@@ -261,9 +261,30 @@ class Readonly {
     ));
   }
 
-  public function get_hub_status() {
-    throw new VPNException('not implemented yet');
-    $ret = $this->connection->call('GetHubStatus');
+  public function get_hub_status($hubname) {
+    $ret = $this->connection->call('GetHubStatus', array(
+      'HubName' => array(new Detail\String($hubname))));
+    return array(
+      'Traffic' => self::get_traffic($ret),
+      'Name' => Detail\lookup($ret, 'HubName'),
+      'Type' => Detail\lookup($ret, 'HubType'),
+      'Online' => (boolean)Detail\lookup($ret, 'Online'),
+      'CreateTime' => Detail\lookup($ret, 'CreatedTime'),
+      'LastCommunicateTime' => Detail\lookup($ret, 'LastCommTime'),
+      'LastLoginTime' => Detail\lookup($ret, 'LastLoginTime'),
+      'AccessLists' => Detail\lookup($ret, 'NumAccessLists'),
+      'Users' => Detail\lookup($ret, 'NumUsers'),
+      'Groups' => Detail\lookup($ret, 'NumGroups'),
+      'Session' => array(
+        'Sessions' => Detail\lookup($ret, 'NumSessions'),
+        'BridgeSessions' => Detail\lookup($ret, 'NumSessionsBridge'),
+        'ClientSessions' => Detail\lookup($ret, 'NumSessionsClient'),
+      ),
+      'IpTables' => Detail\lookup($ret, 'NumIpTables'),
+      'MacTables' => Detail\lookup($ret, 'NumMacTables'),
+      'Logins' => Detail\lookup($ret, 'NumLogin'),
+      'SecureNAT' => (boolean)Detail\lookup($ret, 'SecureNATEnabled'),
+    );
   }
 
   public function get_hub_log() {
