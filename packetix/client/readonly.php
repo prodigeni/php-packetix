@@ -189,8 +189,8 @@ class Readonly {
     for ($i = 0; $i < count($ret['HubName']); ++$i) {
       $a[$i] = array(
         'Online' => (boolean)Detail\lookup($ret, 'Online', $i),
-        'HubName' => Detail\lookup($ret, 'HubName', $i),
-        'HubType' => Detail\lookup($ret, 'HubType', $i),
+        'Name' => Detail\lookup($ret, 'HubName', $i),
+        'Type' => Detail\lookup($ret, 'HubType', $i),
         'CreateTime' => Detail\lookup($ret, 'CreatedTime', $i),
         'LastCommunicateTime' => Detail\lookup($ret, 'LastCommTime', $i),
         'LastLoginTime' => Detail\lookup($ret, 'LastLoginTime', $i),
@@ -212,6 +212,7 @@ class Readonly {
       throw new VPNException('Radius server not configured');
     }
     return array(
+      'Name' => $hubname, // server does not set correct value
       'ServerName' => Detail\lookup($ret, 'RadiusServerName'),
       'Port' => Detail\lookup($ret, 'RadiusPort'),
       'Secret' => Detail\lookup($ret, 'RadiusSecret'),
@@ -229,7 +230,7 @@ class Readonly {
     $a = array();
     for ($i = 0; $i < count($ret['Hostname']); ++$i) {
       $a[$i] = array_merge(self::get_ip($ret, $i), array(
-        'Hostname' => Detail\lookup($ret, 'Hostname', $i),
+        'HostName' => Detail\lookup($ret, 'Hostname', $i),
         'CID' => Detail\lookup($ret, 'Name', $i),
         'Port' => Detail\lookup($ret, 'Port', $i),
         'Type' => Detail\lookup($ret, 'Type', $i),
@@ -245,7 +246,7 @@ class Readonly {
     return array_merge(self::get_ip($ret), array(
       'Port' => Detail\lookup($ret, 'Port'),
       'Type' => Detail\lookup($ret, 'Type'),
-      'Hostname' => Detail\lookup($ret, 'Hostname'),
+      'HostName' => Detail\lookup($ret, 'Hostname'),
       'ConnectedTime' => Detail\lookup($ret, 'ConnectedTime'),
       'Server' => array(
         'Name' => Detail\lookup($ret, 'ServerStr'),
