@@ -12,7 +12,7 @@ Example:
       <?php
         require_once('packetix/packetix.php');
         try {
-          $client = PacketiX\create('example.com')->pass('password');
+          $client = packetix_readonly_client('example.com')->pass('password');
           if ($client->test()) {
             printf("<p>PacketiX RPC test successful</p>\n");
           }
