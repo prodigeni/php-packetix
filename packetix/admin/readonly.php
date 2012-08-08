@@ -1,4 +1,4 @@
-<?php namespace PacketiX\Client;
+<?php namespace PacketiX\Admin;
 require_once(dirname(__FILE__).'/../protocol/protocol.php');
 
 use \PacketiX\VPNException;
