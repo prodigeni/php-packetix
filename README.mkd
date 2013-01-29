@@ -51,4 +51,11 @@ License:
 Author:
 -------
 
-> * Kohei Takahashi (flast@flast.jp)
+* Kohei Takahashi (flast@flast.jp)
+
+Tested Environment:
+-------------------
+
+* Ubuntu 12.04 Desktop x86\_64
+ * apache2 2.2.22 (installed via apt)
+ * php 5.3.10 (installed via apt)
